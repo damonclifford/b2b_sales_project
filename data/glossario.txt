@@ -1,0 +1,104 @@
+GLOSSARIO: || N: A COLUNA COM OS NOMES, FOI PQ ESQUECEU DE TIRAR? LOL
+
+Number Of Opportunities - número de vezes que o prospecto ou cliente conversou com a gente para possivelmente fechar uma solução. Importante: para clientes que a gente fecha, uma oportunidade (renewal) a 1 ano dali é criada automaticamente pelo sistema. || N: NAO ENTENDI O RENEWAL **TARGET**
+
+
+Nb Won Opp - quantas das oportunidades acima conseguimos assinar. || OK **TARGET**
+
+
+Number of Open Opportunities - quantas das oportunidades estão sendo trabalhadas agora pelo time de vendas ou CX. || OK **TARGET**
+
+
+LastModifiedOpportunitiesDate - qual a última data e hora que mexemos na página da oportunidade no salesforce || N: ENTENDI QUE ERA 1 EMP -> N OPPs
+
+ZoomInfo - fornecedor de dados || N: PQ NAO USA EMPLOYEES & ANNUAL REV.?
+
+Pct Organic Visits - quanto, do total de visitas que o site tem, vêm de busca orgânica || OK
+
+SEO Visits - similar à coluna organic visits, mas precisaria comparar as duas (aquele gráfico que fracassei) para entender a diferença e qual a coluna mais íntegra. suspeito que seja a SEO Visits mesmo. || N: CONVERSAR SOBRE ESSA
+
+Combined Pages - o número total de páginas que todos os sites da empresa têm (imagina a Globo por exemplo, tem umas centenas de sites. Suspeito que os dados dessa coluna não sejam muito confiáveis (está bem incompleto) || N: +50% NULO É COMPLICADO, SE A COLUNA FOR MUUUITO RELEVANTE DISCUTIMOS UMA FORMA DE PREENCHER
+
+URLs Indexed - número de páginas do site da empresa indexados no Google || N: MAIS CONFIAVEL E APRENTEMENTE CORRELACIONADA A ANTERIOR
+
+Account Status - Active Customer: cliente pagante atual, Lost Customer: já foi cliente no passado mas deu churn, Partner: irrelevante para a nossa análise. Prospect: contas em potencial || N: DELETAR AS LINHAS COM PARTNER?  **TARGET**
+
+Active Service Package - Qual o nível de suporte (clientes atuais) que a conta recebe || OK
+
+Commited MRR - Today (converted) - Quanto paga mensalmente à gente ||  N: 70% $0.00, N CLIENTE, NAO PAGA (APENAS 230 NON ZERO)
+
+NbUsers - # de logins que a empresa têm (isso não afeta o preço) || OK
+
+NbProjects - um projeto é uma instância da plataforma. um cliente pode ter mais de um projeto pro mesmo site, ou um projeto para cada site. || OK
+
+NbSessions - quantos vezes o cliente logou na plataforma || OK
+
+Account ICP Score - o score que o time de marketing e vendas gerou pra cada conta para gerar o tiering S, A B C || N: PENSAR SE NAO DA OVERFFITING
+
+Account ICP Tier - o tier S, A B C || OK
+
+ICP TIER - HS - não sei qual a diferença desse, precisaria comparar com a coluna anterior pra saber || N: ME NEITHER
+
+Page Count - uma segunda coluna para # of URLs. precisaria comparar para ver a diferença entre as duas e qual usar.
+
+Alexa Rank - ranking de quão popular um site é de acordo com a Alexa.com
+
+Parent Account Status || N: **TARGET**
+
+________________
+
+CAMPOS IMPORTANTES QUE AFETAM O FIT DE UM PROSPECT:
+
+Number Of Opportunities - Se esse número é alto mas o número de Nb Won Opp é 0, isso quer dizer que estamos tentando vender há muito tempo para o cliente, sem sucesso. Talvez como um indicador segundário ajude.
+
+Nb Won Opp - Precisa ser 0 para prospectos.
+
+Pct Organic Visits - Se esse número é alto, isso quer dizer que a empresa depende de SEO para gerar receita. Números extremos perto de 0% e perto de 100% provavelmente estão errados/não são confiáveis
+
+SEO Visits - Quanto maior esse número, em geral, mais poderoso é o time de SEO, e mais faz sentido investir numa tecnologia como a nossa. Abaixo de 1M de visitas orgãnicas ou acima de 500M não faz muito sentido. (deveríamos descartar esses entao?)
+
+URLs Indexed -  Quanto maior esse número, em geral, mais poderoso é o time de SEO, e mais faz sentido investir numa tecnologia como a nossa. Abaixo de 25K não faz muito sentido.
+
+Combined Pages - idem acima
+
+Page Count - idem acima
+
+______________________
+
+Campos que nos dizem sobre o fit de um cliente ativo, que podem ser bons indicativos de potenciais clientes com bom fit:
+
+Account Status - tem que ser Active Customer aqui
+
+Nb Won Opp - quanto mais, melhor. em geral, diz que um cliente gosta das nossas soluções e compra bastante com a gente
+
+Commited MRR - Quanto mais um cliente paga, melhor.
+
+NbUsers - Quanto mais usuários o cliente tem dentro da plataforma, melhor
+
+NbProjects - Idem acima
+
+Pct Organic Visits - Idem ao fit de um prospect
+
+SEO Visits - Idem ao fit de um prospect
+
+URLs Indexed - Idem ao fit de um prospect
+
+Combined Pages - Idem ao fit de um prospect
+
+Page Count - Idem ao fit de um prospect
+
+
+______________________
+
+NICHOLAS OBS
+
+Pensar na pergunta e formacao do target
+criar regra de negocio pros datetimes
+
+
+
+
+
+
+
+
