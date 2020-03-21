@@ -46,3 +46,6 @@ def pct_to_numeric(df, col):
     df[col] = df[col].replace(to_replace=r'[\-]', value=np.nan, regex=True)
     return df[col].replace({'%':''}, regex=True).astype(float).div(100)
 
+
+def adjust_categorical(df, col):
+    return df[col].replace('-', 'unknown')
