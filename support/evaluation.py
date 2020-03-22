@@ -90,14 +90,33 @@ def plot_learning_curve(estimator, title, X, y, ylim=None, cv=None, n_jobs=-1, t
 
 def plot_confusion_matrix(y, y_pred):
     print(classification_report(y, y_pred))
-    plt.rcParams['figure.figsize'] = (6, 4)
-    fig, ax = plt.subplots()
+    #plt.rcParams['figure.figsize'] = (6, 4)
+    fig, ax = plt.subplots(figsize=(6,4))
     sns.heatmap(confusion_matrix(y, y_pred), annot=True, ax=ax, fmt='d', cmap='Reds')
     ax.set_title("Confusion Matrix", fontsize=18)
     ax.set_ylabel("True label")
     ax.set_xlabel("Predicted Label")
     plt.tight_layout()
     return
+
+
+
+from sklearn.inspection import permutation_importance
+from sklearn.base import clone
+def plot_feature_permutation(pipeline, model, X_train, y_train, X_test, y_test):
+    
+    full_pipeline = clone(pipeline)
+    full_pipeline.steps.append(['classifier',model])
+    full_pipeline.fit(X_train, y_train)
+
+    result = permutation_importance(full_pipeline, X_test, y_test, n_repeats=10, random_state=20, n_jobs=2)
+    sorted_idx = result.importances_mean.argsort()
+
+    fig, ax = plt.subplots()
+    ax.boxplot(result.importances[sorted_idx].T, vert=False, labels=X_test.columns[sorted_idx])
+    ax.set_title("Permutation Importances (test set)")
+    fig.tight_layout()
+    plt.show()
 
 
 

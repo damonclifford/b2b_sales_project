@@ -67,6 +67,25 @@ def get_pipeline(cat_pipeline, num_pipeline):
 
   return pipeline
 
+
+
+
+
+def save_pipeline(pipeline, file_path):
+  #from sklearn.externals import joblib
+  from joblib import dump
+  dump(pipeline, file_path)
+
+
+
+
+def load_pipeline(file_path):
+  from joblib import load
+  model = load(file_path)
+  return model
+
+
+
 def baseline_model_predictions(X, y, n_targeted):
   # Get all of the instances where the previous campaign was a success
   success = X[X.poutcome == 'success']
