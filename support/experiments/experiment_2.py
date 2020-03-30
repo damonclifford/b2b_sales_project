@@ -1,129 +1,114 @@
-import numpy as np
-from sklearn.preprocessing import OneHotEncoder, FunctionTransformer, KBinsDiscretizer
+import pandas as pd
+from sklearn.preprocessing import OneHotEncoder, FunctionTransformer, RobustScaler, MinMaxScaler
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline, FeatureUnion
-from sklearn.base import clone
+from category_encoders import BinaryEncoder, OrdinalEncoder
+from datasets import get_data
+from sklearn.impute import SimpleImputer
+import numpy as np
 
 
-NUMERIC_FEATURES = [
-    'age', 
-    'campaign', 
-    'previous', 
-    'emp.var.rate', 
-    'cons.price.idx', 
-    'cons.conf.idx', 
-    'euribor3m', 
-    'nr.employed',
-    'campaign_to_previous'
+########
+def get_features_types():
+  X, y = get_data('../data/trainDF.csv')
+  dtypes = pd.DataFrame(X.dtypes.rename('type')).reset_index().astype('str')
+  numeric = dtypes[(dtypes.type.isin(['int64', 'float64']))]['index'].values
+  categorical = dtypes[~(dtypes['index'].isin(numeric)) & (dtypes['index'] != 'y')]['index'].values
+  return categorical, numeric
+
+
+
+CAT_FEAT, NUM_FEAT = get_features_types()
+
+
+ORDINAL_FEATURES =  [
+  'ZoomInfo_Revenue_Range',
+  'Account_ICP_Tier',
+  'Page_Count_Range',
+  'Parent_Account_Status'
 ]
 
-CATEGORICAL_FEATURES =  [
-  'job',
-  'marital',
-  'education',
-  'default',
-  'housing',
-  'loan',
-  'contact',
-  'month',
-  'day_of_week',
-  'poutcome'
+DEL_NUM_PIPE2 = [
+  'Activities_Last_30_Days', 
+  'Organic_Visits',
+  'Annual_Revenue_converted', 
+  'Page_Count'
 ]
 
-NEW_CATEGORICAL_FEATURES = [
-  'pcontacted_last_campaign',
-  'pcampaign',
-  'previous',
-  'campaign_gte10'
+
+MAP_ORDINAL = [
+
+{'col': 'ZoomInfo_Revenue_Range', 
+'mapping': {'Under $500,000': 0, '$500,000 - $1 mil.': 1, '$1 mil. - $5 mil.': 2, 
+            '$5 mil. - $10 mil.': 3, '$10 mil. - $25 mil.': 4,
+            '$25 mil. - $50 mil.' : 5, '$50 mil. - $100 mil.': 6, '$100 mil. - $250 mil.': 7,
+            '$250 mil. - $500 mil.': 8,  '$500 mil. - $1 bil.' : 9,
+            '$1 bil. - $5 bil.': 10, 'Over $5 bil.': 11, }},
+
+    
+{'col': 'Page_Count_Range', 
+'mapping': {'<500': 0, 'Between 500 and 1K': 1,'Between 1K and 5K': 2, 'Between 5K and 10K': 3, 
+            'Between 10K and 50K': 4, 'Between 50K and 100K': 5, '<100K': 6,
+            'Between 100K and 250K': 7, 'Between 250K and 500K': 8, 'Between 500K and 1M': 9, '>1M': 10}},
+
+    
+{'col': 'Account_ICP_Tier', 
+'mapping': {'Tier C': 0, 'Tier B': 1, 'Tier A': 2, 'Tier S': 3}},  
+
+{'col': 'Parent_Account_Status', 
+'mapping': {'Lost Customer': 0, 'Prospect': 1, 'Active Customer': 2}}
+
 ]
 
-def ft_pcontacted_last_campaign(X):
-  pcontacted = ~(X == 999)
-  return pcontacted.values.reshape(-1,1)
 
-def ft_pcampaign(X):
-  pcampaign = ~(X == 'nonexistent')
-  return pcampaign.values.reshape(-1,1)
-
-def ft_previous(X):
-  previous = X.astype(str)
-  return previous.values.reshape(-1,1)
-
-def ft_campaign_gte10(X):
-  campaign_gte10 = X >= 10
-  return campaign_gte10.values.reshape(-1,1)
-
-def ft_campaign_to_previous(X):
-  ratio = lambda x: 0 if x.previous == 0 else x.campaign / x.previous
-  campaign_to_previous = X[['campaign', 'previous']].apply(ratio, axis=1)
-  return campaign_to_previous.values.reshape(-1,1)
-
-def get_categorical_ct():
-  # Create the transformers for categorical features
-  add_pcontacted_last_campaign = FunctionTransformer(ft_pcontacted_last_campaign, validate=False)
-  add_pcampaign = FunctionTransformer(ft_pcampaign, validate=False)
-  add_previous = FunctionTransformer(ft_previous, validate=False)
-  add_campaign_gte10 = FunctionTransformer(ft_campaign_gte10, validate=False)
-  
-  cat_features = [
-    ('categoricals', 'passthrough', CATEGORICAL_FEATURES),
-    ('pcontacted_last_campaign', add_pcontacted_last_campaign, 'pdays'),
-    ('pcampaign', add_pcampaign, 'poutcome'),
-    ('previous', add_previous, 'previous'),
-    ('campaign_gte10', add_campaign_gte10, 'campaign')
-  ]
-  cat_ct = ColumnTransformer(cat_features)
-  
-  return cat_ct
+######
 
 def get_categorical_pipeline():
-  cat_cts = get_categorical_ct()
+  # Create the transformers for categorical features
 
-  # Create the pipeline to transform categorical features
-  cat_pipeline = Pipeline([
-    ('cat_ct', cat_cts),
-    ('ohe', OneHotEncoder(handle_unknown='ignore'))
-  ])
+    cat_features = [
+    #('categoricals', 'passthrough', CAT_FEAT),
+    ('binary', OrdinalEncoder(), 'ZoomInfo_Global_HQ_Country'),
+    ('catboost', OrdinalEncoder(handle_unknown='value', handle_missing='value'), 'Adjusted_Industry'),
+    ('ordinal',OrdinalEncoder(mapping=MAP_ORDINAL, handle_unknown='value'), ORDINAL_FEATURES),
+    ]
+    
+    cat_ct = ColumnTransformer(cat_features)
 
-  return cat_pipeline
+    #Create the pipeline to transform categorical features
+    cat_pipeline = Pipeline([
+          ('cat_ct', cat_ct),
+          #('ohe', OneHotEncoder(handle_unknown='ignore'))
+      ])
+
+    return cat_pipeline
+
+
 
 def get_numeric_pipeline():
-  binning_pipeline = Pipeline([
-    ('log', FunctionTransformer(np.log, validate=True)),
-    ('kbins', KBinsDiscretizer())
-  ])
-
   # Create the transformers for numeric features
-  # num_ct = ColumnTransformer([('numerics', 'passthrough', numerics)])
-
-  # new_num_features = [
-  #   ('num_ct', num_ct),
-  #   ('ft_campaign_to_previous', FunctionTransformer(ft_campaign_to_previous, validate=False))
-  # ]
-  # num_union = FeatureUnion(new_num_features)
-
-  # # Create the pipeline to transform numeric features
-  # num_pipeline = Pipeline([
-  #   ('num_union', num_union),
-  #   ('scaler', RobustScaler())
-  # ])
-
-  age_campaign_ct = ColumnTransformer([
-    ('age_pipeline', clone(binning_pipeline), ['age']),
-    ('campaign_pipeline', clone(binning_pipeline), ['campaign'])
+  NUM_FEAT_PIPE2 = list(set(NUM_FEAT)-set(DEL_NUM_PIPE2))
+  num_ct = ColumnTransformer([
+      ('fill_diff', SimpleImputer(missing_values=np.nan, strategy='constant',fill_value=-1), NUM_FEAT_PIPE2)                          
   ])
-  
-  return age_campaign_ct
 
-def get_pipeline():
-  # Create the categorical and numeric pipelines
-  cat_pipeline = get_categorical_pipeline()
-  num_pipeline = get_numeric_pipeline()
+  # Create the pipeline to transform numeric features
+  num_pipeline = Pipeline([
+          ('num_union', num_ct),
+          ('scaler', RobustScaler()),
+          ('minimax', MinMaxScaler())
+  ])  
+  return num_pipeline
+
+
+####################
+
+def get_pipeline(cat_pipeline, num_pipeline):
 
   # Create the feature union of categorical and numeric attributes
   ft_union = FeatureUnion([
     ('cat_pipeline', cat_pipeline),
-    # ('num_pipeline', num_pipeline)
+    ('num_pipeline', num_pipeline)
   ])
 
   pipeline = Pipeline([
@@ -131,3 +116,60 @@ def get_pipeline():
   ])
 
   return pipeline
+
+
+
+def get_full_pipeline():
+  # Create the categorical and numeric pipelines
+  cat_pipeline = get_categorical_pipeline()
+  num_pipeline = get_numeric_pipeline()
+
+  # Create the feature union of categorical and numeric attributes
+  ft_union = FeatureUnion([
+    ('cat_pipeline', cat_pipeline),
+    ('num_pipeline', num_pipeline)
+  ])
+
+  pipeline = Pipeline([
+    ('ft_union', ft_union)
+  ])
+
+  return pipeline
+
+
+
+############################
+
+def baseline_model_predictions(X, y, n_targeted):
+  # Combine the targeted and random groups
+  baseline_targets = X[X.Account_ICP_Tier.isin(['Tier S', 'Tier A'])].sample(n=n_targeted, random_state=20)
+  baseline_ys = y.loc[baseline_targets.index]
+
+  return baseline_ys
+
+
+
+def random_model_predictions(X, y, n_targeted):
+  # Combine the targeted and random groups
+  random_targets = X.sample(n=n_targeted, random_state=42)
+  random_ys = y.loc[random_targets.index]
+  return random_ys
+
+
+
+def get_model_profit(X, y, n_targeted, avg_revenue,avg_cost, generic_predictions=None, preds=None):
+
+  if preds is None: preds = generic_predictions(X, y, n_targeted)
+    
+  outcomes = preds.apply(lambda x: avg_cost if x == 0 else avg_cost + avg_revenue)
+  profit = sum(outcomes)
+  return profit
+
+
+
+
+
+
+
+
+

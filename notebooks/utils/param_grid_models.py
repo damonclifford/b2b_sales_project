@@ -90,3 +90,32 @@ knn_param_grid =  {
 }
 
 
+
+
+rf_param_grid =  {
+    'rf__bootstrap' : [True, False],
+    #'rf__ccp_alpha' : 0.0, 
+    'rf__class_weight': [None, {0:1,1:1}, {0:1,1:10}, {0:1,1:100}, 'balanced'],
+    #'rf__criterion' : 'gini', 
+    'rf__max_depth' : [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, None], 
+    'rf__max_features' : ['auto', 'sqrt'],
+    #'rf__max_leaf_nodes' : None,
+    #'rf__max_samples' : None,
+    #'rf__min_impurity_decrease' : 0.0, 
+    #'rf__min_impurity_split' : None,
+    'rf__min_samples_leaf' : [1, 2, 4],
+    'rf__min_samples_split' : [2, 5, 10],
+    #'rf__min_weight_fraction_leaf' : 0.0, 
+    'rf__n_estimators' : [200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000],
+    #'rf__n_jobs' : None, 
+    #'rf__oob_score' : False, 
+    #'rf__random_state' : None,
+    #'rf__verbose' : 0, 
+    #'rf__warm_start' : False
+}
+
+
+
+
+
+
