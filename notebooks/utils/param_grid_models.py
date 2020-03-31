@@ -1,6 +1,6 @@
 #param drid models for randomsearchCV
 
-
+import numpy as np
 xgb_param_grid = {
         'xgb__colsample_bylevel' : [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1.0],
         'xgb__colsample_bytree' :[0.6, 0.7, 0.8, 1.0],
@@ -11,7 +11,8 @@ xgb_param_grid = {
         'xgb__n_estimators' : list(range(50, 400, 50)),
         'xgb__reg_alpha' : list(np.logspace(-1, 1, num=10)/10),
         'xgb__reg_lambda' : list(np.logspace(-1, 1, num=10)/10),
-        'xgb__subsample' : [0.6, 0.7, 0.8, 1.0]
+        'xgb__subsample' : [0.6, 0.7, 0.8, 1.0],
+        'xgb__scale_pos_weight' : [1, 10, 25, 50, 75, 99, 100, 1000, 3000,5000, 10000]
 }
 
 
@@ -25,26 +26,28 @@ lgbm_param_grid = {
     'lgbm__reg_lambda': list(np.linspace(0, 1)),
     'lgbm__colsample_bytree': list(np.linspace(0.6, 1, 10)),
     'lgbm__subsample': list(np.linspace(0.5, 1, 100)),
-    'lgbm__is_unbalance': [True, False]
+    'lgbm__is_unbalance': [True, False],
+    'lgbm__class_weight': [None, {0:1,1:1}, {0:1,1:10}, {0:1,1:100}, 'balanced']
 }
 
 
 lr_param_grid = {
   'lr__C': np.logspace(-3, 2, 6),
-  'lr__class_weight': None, 
-  'lr__dual': False, 
-  'lr__fit_intercept': True,
-  'lr__intercept_scaling': 1, 
-  'lr__l1_ratio': None, 
-  'lr__max_iter': 100,
-  'lr__multi_class': 'warn',
-  'lr__n_jobs': None, 
+  #'lr__class_weight': None, 
+  #'lr__dual': False, 
+  #'lr__fit_intercept': True,
+  #'lr__intercept_scaling': 1, 
+  #'lr__l1_ratio': None, 
+  #'lr__max_iter': 100,
+  #'lr__multi_class': 'warn',
+  #'lr__n_jobs': None, 
   'lr__penalty':  ['l1', 'l2'],
-  'lr__random_state': None, 
-  'lr__solver': 'liblinear', #good for small datasets
-  'lr__tol': 0.0001, 
-  'lr__verbose': 0,
-  'lr__warm_start': False
+  #'lr__random_state': None, 
+  'lr__solver': ['liblinear'], #good for small datasets
+  #'lr__tol': 0.0001, 
+  #'lr__verbose': 0,
+  #'lr__warm_start': False,
+  'lr__class_weight': [None, {0:1,1:1}, {0:1,1:10}, {0:1,1:100}, 'balanced']
 }
 
 
@@ -72,7 +75,8 @@ sgd_param_grid = {
   'sgd__tol' : [0.001],
   #'sgd__validation_fraction' : [0.1], 
   #'sgd__verbose' : [0], 
-  #'sgd__warm_start' : [False]
+  #'sgd__warm_start' : [False],
+  'sgd__class_weight': [None, {0:1,1:1}, {0:1,1:10}, {0:1,1:100}, 'balanced']
 }
 
 

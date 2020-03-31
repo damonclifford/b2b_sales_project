@@ -1,5 +1,6 @@
 #param drid models for BayessearchCV
-
+from skopt import BayesSearchCV
+from skopt.space import Real, Categorical, Integer
 
 #skopt
 lr_param_grid = {
@@ -46,7 +47,7 @@ lgbm_param_grid = {
     'lgbm__colsample_bytree': Real(6e-1, 1, 'uniform'),
     'lgbm__subsample': Real(5e-1, 1, 'uniform'),
     'lgbm__is_unbalance': Categorical([True, False]),
-    'lgbm__class_weight': Categorical([None, 'balanced'])
+    #'lgbm__class_weight': Categorical([None, 'balanced'])
 
 }
 
@@ -56,4 +57,6 @@ lgbm_param_grid = {
 #############################################################################
 #############################################################################
 #############################################################################
+
+
 
