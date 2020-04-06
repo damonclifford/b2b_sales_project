@@ -259,7 +259,7 @@ class TunedModel_Skopt(Model):
       """
       if not self.pipeline:
         # Setup
-        grid_search = RandomizedSearchCV(
+        grid_search = BayesSearchCV(
             self.model, 
             self.param_distributions, 
             cv=cv_folds,

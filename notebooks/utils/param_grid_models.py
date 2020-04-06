@@ -33,18 +33,17 @@ lgbm_param_grid = {
 
 lr_param_grid = {
   'lr__C': np.logspace(-3, 2, 6),
-  #'lr__class_weight': None, 
   #'lr__dual': False, 
   #'lr__fit_intercept': True,
-  #'lr__intercept_scaling': 1, 
+  'lr__intercept_scaling': [1], 
   #'lr__l1_ratio': None, 
-  #'lr__max_iter': 100,
+  'lr__max_iter': [100],
   #'lr__multi_class': 'warn',
   #'lr__n_jobs': None, 
   'lr__penalty':  ['l1', 'l2'],
   #'lr__random_state': None, 
   'lr__solver': ['liblinear'], #good for small datasets
-  #'lr__tol': 0.0001, 
+  'lr__tol': [0.0001],
   #'lr__verbose': 0,
   #'lr__warm_start': False,
   'lr__class_weight': [None, {0:1,1:1}, {0:1,1:10}, {0:1,1:100}, 'balanced']

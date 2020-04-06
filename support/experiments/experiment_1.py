@@ -29,7 +29,6 @@ CAT_FEAT, NUM_FEAT = get_features_types()
 
 def get_categorical_pipeline():
 
-  #CAT_FEAT = list(set(CAT_FEAT)-set(['Activities_Last_30_Days']))
   # Create the transformers for categorical features
   cat_ct = ColumnTransformer([('categoricals', 'passthrough', CAT_FEAT)])
 

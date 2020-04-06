@@ -12,6 +12,24 @@ import pandas as pd
 import numpy as np
 
 
+
+
+#https://stackoverflow.com/questions/8924173/how-do-i-print-bold-text-in-python
+class color:
+   PURPLE = '\033[95m'
+   CYAN = '\033[96m'
+   DARKCYAN = '\033[36m'
+   BLUE = '\033[94m'
+   GREEN = '\033[92m'
+   YELLOW = '\033[93m'
+   RED = '\033[91m'
+   BOLD = '\033[1m'
+   UNDERLINE = '\033[4m'
+   END = '\033[0m'
+
+#print(color.UNDERLINE + 'Hello World !' + color.END)
+
+
 #configuracao basica dos graficos
 def setup_graphics():
   # Plotting options
@@ -146,8 +164,8 @@ def plot_var(df, y_axis, stack, x_axis1, x_axis2, agg='Mean'):
     
 def dist_plot(df, attr, log=False):
 #setup graphics
-    pyplot.rcParams['axes.titlesize'] = 14
-    pyplot.rcParams['axes.labelsize'] = 12
+    #pyplot.rcParams['axes.titlesize'] = 14
+    #pyplot.rcParams['axes.labelsize'] = 12
     fig, (ax1) = pyplot.subplots(1, 1, figsize=(12,2))
     
     if(log==True):
@@ -165,3 +183,41 @@ def dist_plot(df, attr, log=False):
     
     pyplot.legend()
     pyplot.tight_layout
+
+
+
+
+
+def plot_corr_matrix(df):
+
+    from string import ascii_letters
+    import numpy as np
+    import pandas as pd
+
+    sns.set(style="white")
+    #pyplot.rcParams['axes.titlesize'] = 18
+    #pyplot.rcParams['axes.labelsize'] = 12
+
+    # Compute the correlation matrix
+    corr = df.corr()
+
+    # Generate a mask for the upper triangle
+    mask = np.triu(np.ones_like(corr, dtype=np.bool))
+
+    # Set up the matplotlib figure
+    f, ax = pyplot.subplots(figsize=(11, 9) )
+
+
+    # Generate a custom diverging colormap
+    cmap = sns.diverging_palette(220, 10, as_cmap=True)
+
+    ax.set_title('Corr Matrix from L2-features', fontsize=18)
+    # Draw the heatmap with the mask and correct aspect ratio
+    sns.heatmap(corr, mask=mask, cmap=cmap, vmax=.7, center=0.5, 
+                square=True, linewidths=.75, cbar_kws={"shrink": .5},  annot=True)
+
+
+
+
+
+
